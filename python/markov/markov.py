@@ -34,7 +34,6 @@ out = [state]
 #       fullstop, question mark, or such other final punctuation character that
 #       text generation will finish on.
 for i in range(50):
-  print(list(model[state]), model[state].values())
   # TODO: Fix the IndexError that occurs when the element at the end of corpus
   #       is reached, due to the fact that there are no words after it, and
   #       therefore no probability of a next word.
