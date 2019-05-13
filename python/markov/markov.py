@@ -4,11 +4,16 @@ A simple Markov chain-powered text generator.
 You can run this code with `python -X utf8 markov.py`.
 """
 
-import os
 import random
+import argparse
 
 from pathlib import Path
 from collections import defaultdict, Counter
+
+parser = argparse.ArgumentParser(description='Generate text from a corpus with a Markov chain.')
+parser.add_argument('corpus', type=str, help='The file path to the input text.')
+
+args = parser.parse_args()
 
 # Characters that text generation should end on.
 # TODO: Handle quotation marks and brackets.
@@ -22,9 +27,7 @@ STOP_CHARACTERS = (
   '...',
 )
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-
-corpus = Path(f'{script_dir}/input.txt').read_text().rstrip().split()
+corpus = Path(args.corpus).read_text().rstrip().split()
 model = defaultdict(Counter)
 
 def make_pairs(corpus):
