@@ -44,7 +44,7 @@ out = [state]
 
 for i in range(100):
   # TODO: Fix the IndexError that occurs when the element at the end of corpus
-  #       is reached, due to the fact that there are no words after it, and
+  #       is reached, which occurs because there are no words after it, and
   #       therefore no probability of a next word.
   choice = random.choices(list(model[state]), model[state].values())
   state = choice[0]
