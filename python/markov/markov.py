@@ -10,8 +10,15 @@ import argparse
 from pathlib import Path
 from collections import defaultdict, Counter
 
-parser = argparse.ArgumentParser(description='Generate text from a corpus with a Markov chain.')
+parser = argparse.ArgumentParser(
+  description='Generate text from a corpus with a Markov chain.'
+)
 parser.add_argument('corpus', type=str, help='The file path to the input text.')
+parser.add_argument(
+  '-o', '--order',
+  type=int, default=1,
+  help='The order (amount of words to consider) of the Markov chain.'
+)
 
 args = parser.parse_args()
 
@@ -30,25 +37,24 @@ STOP_CHARACTERS = (
 corpus = Path(args.corpus).read_text().rstrip().split()
 model = defaultdict(Counter)
 
-def make_pairs(corpus):
-  """A custom iterator for creating a pair of the nth and (n+1)th elements."""
-  for i in range(len(corpus) - 1):
-    yield (corpus[i], corpus[i + 1])
-
 print('Training model...')
-for word1, word2 in make_pairs(corpus):
-  # TODO: Implement a configurable chain order (that is, allow having however
-  #       many words as keys instead of only 1).
-  model[word1].update([word2])
+# TODO: Write/use a more idiomatic iterator for this.
+for i in range(len(corpus)):
+  # Do not record the last state/word in the corpus since it has no following
+  # words.
+  if i == len(corpus) - (args.order + 1):
+    break
+
+  key = ' '.join(corpus[i:i + args.order])
+  val = ' '.join(corpus[i + args.order:i + 2 * args.order])
+
+  model[key].update([val])
 
 print('Sampling...')
 state = random.choice(list(model))
 out = [state]
 
-for i in range(100):
-  # TODO: Fix the IndexError that occurs when the element at the end of corpus
-  #       is reached, which occurs because there are no words after it, and
-  #       therefore no probability of a next word.
+for i in range(50):
   choice = random.choices(list(model[state]), model[state].values())
   state = choice[0]
 
