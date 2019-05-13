@@ -16,10 +16,10 @@ STOP_CHARACTERS = (
   '.',
   '?',
   '!',
-  # In reality, people don't write ellipses as a stop character, but when
-  # normalising text ellipses will be converted to a single character for
-  # simplicity in later stages.
   '…',
+  # This is *technically* not a character, but since no one actually uses
+  # Unicode's ellipses character we have to include this.
+  '...',
 )
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
