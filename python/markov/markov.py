@@ -1,5 +1,4 @@
-"""
-A simple Markov chain-powered text generator.
+#!/usr/bin/env python3
 
 # A simple Markov chain-powered text generator.
 #
