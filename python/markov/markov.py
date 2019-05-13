@@ -1,8 +1,9 @@
 """
 A simple Markov chain-powered text generator.
 
-You can run this code with `python -X utf8 markov.py`.
-"""
+# A simple Markov chain-powered text generator.
+#
+# You can run this code with `python -X utf8 markov.py`.
 
 import random
 import argparse
