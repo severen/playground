@@ -10,6 +10,18 @@ import random
 from pathlib import Path
 from collections import defaultdict, Counter
 
+# Characters that text generation should end on.
+# TODO: Handle quotation marks and brackets.
+STOP_CHARACTERS = (
+  '.',
+  '?',
+  '!',
+  # In reality, people don't write ellipses as a stop character, but when
+  # normalising text ellipses will be converted to a single character for
+  # simplicity in later stages.
+  '…',
+)
+
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 corpus = Path(f'{script_dir}/input.txt').read_text().rstrip().split()
@@ -30,10 +42,7 @@ print('Sampling...')
 state = random.choice(list(model))
 out = [state]
 
-# TODO: Implement the concept of a "stop word", which is a word with a
-#       fullstop, question mark, or such other final punctuation character that
-#       text generation will finish on.
-for i in range(50):
+for i in range(100):
   # TODO: Fix the IndexError that occurs when the element at the end of corpus
   #       is reached, due to the fact that there are no words after it, and
   #       therefore no probability of a next word.
@@ -41,5 +50,8 @@ for i in range(50):
   state = choice[0]
 
   out.extend(choice)
+
+  if choice[0].endswith(STOP_CHARACTERS):
+    break
 
 print(' '.join(out))
