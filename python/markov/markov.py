@@ -36,13 +36,9 @@ class Chain:
 
     def train(self, corpus):
         """Train the chain's model with the given input corpus."""
-        # TODO: Write/use a more idiomatic iterator for this.
-        for i in range(len(corpus)):
-            # Do not record the last state/word in the corpus since it has no following
-            # words.
-            if i == len(corpus) - self._order:
-                break
-
+        # Ignore the last state/word in the corpus (by subtracting the order)
+        # since it has no following words.
+        for i in range(len(corpus) - self._order):
             key = " ".join(corpus[i : i + self._order])
             val = " ".join(corpus[i + self._order : i + 2 * self._order])
 
