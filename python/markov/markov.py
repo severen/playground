@@ -30,8 +30,8 @@ class Chain:
     """An nth-order Markov chain specialised for text generation given an input corpus."""
 
     def __init__(self, order):
-        self.model = defaultdict(Counter)
-        self.order = order
+        self._model = defaultdict(Counter)
+        self._order = order
 
     def train(self, corpus):
         """Train the chain's model with the given input corpus."""
@@ -39,21 +39,21 @@ class Chain:
         for i in range(len(corpus)):
             # Do not record the last state/word in the corpus since it has no following
             # words.
-            if i == len(corpus) - self.order:
+            if i == len(corpus) - self._order:
                 break
 
-            key = " ".join(corpus[i : i + self.order])
-            val = " ".join(corpus[i + self.order : i + 2 * self.order])
+            key = " ".join(corpus[i : i + self._order])
+            val = " ".join(corpus[i + self._order : i + 2 * self._order])
 
-            self.model[key].update([val])
+            self._model[key].update([val])
 
     def generate(self):
         """Generate a random string based upon the chain's current model."""
-        state = random.choice(list(self.model))
+        state = random.choice(list(self._model))
         out = [state]
 
         for _ in range(50):
-            choice = random.choices(list(self.model[state]), self.model[state].values())
+            choice = random.choices(list(self._model[state]), self._model[state].values())
             state = choice[0]
 
             out.extend(choice)
