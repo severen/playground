@@ -6,19 +6,41 @@ A simple Markov chain-powered text generator for Discord.
 You can run this code with `python -X utf8 bot.py`.
 """
 
+import os
+import asyncio
 import argparse
 import discord
 
 from markov import Chain
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv()
 
 parser = argparse.ArgumentParser(
     description="Discord bot for generating random sentences with a Markov chain."
 )
-parser.add_argument("token", type=str, help="The Discord token for your bot.")
+parser.add_argument(
+    "-t",
+    "--token",
+    type=str,
+    default=os.environ.get("DISCORD_TOKEN"),
+    help="The Discord token for your bot.",
+)
+parser.add_argument(
+    "-p",
+    "--persist",
+    type=Path,
+    default=Path("model.json"),
+    help="The file path for storing the model persistently.",
+)
 
 args = parser.parse_args()
 
 chain = Chain(1)
+if args.persist.exists():
+    chain.deserialize(args.persist.read_text())
+chain_lock = asyncio.Lock()
 
 client = discord.Client()
 
@@ -30,17 +52,25 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    # Don't respond to ourself.
-    if message.author == client.user:
-        return
+    async with chain_lock:
+        # Don't respond to ourself.
+        if message.author == client.user:
+            return
 
-    if message.content == "ping":
-        await message.channel.send("pong")
-    elif message.content == f"{client.user.name} give me text":
-        await message.channel.send(chain.generate())
-    else:
-        corpus = message.content.rstrip().split()
-        chain.train(corpus)
+        if message.content == f"{client.user.name} give me text":
+            await message.channel.send(chain.generate())
+        else:
+            corpus = message.content.rstrip().split()
+            chain.train(corpus)
 
 
-client.run(args.token)
+loop = asyncio.get_event_loop()
+
+try:
+    loop.run_until_complete(client.start(args.token))
+except KeyboardInterrupt:
+    loop.run_until_complete(client.logout())
+
+    args.persist.write_text(chain.serialize())
+finally:
+    loop.close()
