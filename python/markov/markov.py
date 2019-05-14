@@ -7,6 +7,7 @@ You can run this code with `python -X utf8 markov.py`, or import it in another
 file and use the Chain class directly.
 """
 
+import json
 import random
 import argparse
 
@@ -53,7 +54,9 @@ class Chain:
         out = [state]
 
         for _ in range(50):
-            choice = random.choices(list(self._model[state]), self._model[state].values())
+            choice = random.choices(
+                list(self._model[state]), self._model[state].values()
+            )
             state = choice[0]
 
             out.extend(choice)
@@ -62,6 +65,22 @@ class Chain:
                 break
 
         return " ".join(out)
+
+    def serialize(self):
+        """Serialise the chain's model to JSON."""
+        return json.dumps(self._model)
+
+    def deserialize(self, serialized):
+        """
+        Deserialise the a model from JSON and load it.
+
+        This *replaces* the preexisting model in memory instead of merging with it.
+        """
+        self._model = defaultdict(Counter, json.loads(serialized))
+
+        # Wrap every key back into a Counter since defaultdict won't automatically do this.
+        for key, val in self._model.items():
+            self._model[key] = Counter(val)
 
 
 def main():
