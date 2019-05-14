@@ -50,15 +50,16 @@ class Chain:
         out = [state]
 
         for _ in range(50):
+            # Stop if a stop character or a state without transitions is encountered.
+            if state.endswith(STOP_CHARACTERS) or not self._model[state]:
+                break
+
             choice = random.choices(
                 list(self._model[state]), self._model[state].values()
             )
             state = choice[0]
 
             out.extend(choice)
-
-            if choice[0].endswith(STOP_CHARACTERS):
-                break
 
         return " ".join(out)
 
