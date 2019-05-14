@@ -39,7 +39,7 @@ class Chain:
         for i in range(len(corpus)):
             # Do not record the last state/word in the corpus since it has no following
             # words.
-            if i == len(corpus) - (self.order + 1):
+            if i == len(corpus) - self.order:
                 break
 
             key = " ".join(corpus[i : i + self.order])
