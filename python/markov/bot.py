@@ -60,8 +60,7 @@ async def on_message(message):
         if message.content == f"{client.user.name} give me text":
             await message.channel.send(chain.generate())
         else:
-            corpus = message.content.rstrip().split()
-            chain.train(corpus)
+            chain.train(message.content)
 
 
 loop = asyncio.get_event_loop()

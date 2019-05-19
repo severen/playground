@@ -36,6 +36,8 @@ class Chain:
 
     def train(self, corpus):
         """Train the chain's model with the given input corpus."""
+        corpus = corpus.rstrip().split()
+
         # Ignore the last state/word in the corpus (by subtracting the order)
         # since it has no following words.
         for i in range(len(corpus) - self._order):
@@ -99,7 +101,7 @@ def main():
     chain = Chain(args.order)
 
     print("Training model...")
-    chain.train(Path(args.corpus).read_text().rstrip().split())
+    chain.train(Path(args.corpus).read_text())
 
     print("Generating text from model...")
     print(chain.generate())
