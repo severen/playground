@@ -7,6 +7,7 @@ You can run this code with `python -X utf8 bot.py`.
 """
 
 import os
+import sys
 import asyncio
 import argparse
 import discord
@@ -17,6 +18,17 @@ from pathlib import Path
 
 load_dotenv()
 
+
+def get_token():
+    """Get the Discord token from the environment."""
+    token = os.environ.get("DISCORD_TOKEN")
+    if not token:
+        print("Token required!", file=sys.stderr)
+        exit(1)
+
+    return token
+
+
 parser = argparse.ArgumentParser(
     description="Discord bot for generating random sentences with a Markov chain."
 )
@@ -24,7 +36,7 @@ parser.add_argument(
     "-t",
     "--token",
     type=str,
-    default=os.environ.get("DISCORD_TOKEN"),
+    default=get_token(),
     help="The Discord token for your bot.",
 )
 parser.add_argument(
