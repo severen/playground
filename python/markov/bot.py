@@ -30,7 +30,7 @@ def get_token():
 
 
 parser = argparse.ArgumentParser(
-    description="Discord bot for generating random sentences with a Markov chain."
+    description="Discord bot that generates random sentences using Markov chains."
 )
 parser.add_argument(
     "-t",
