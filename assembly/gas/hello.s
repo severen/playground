@@ -22,7 +22,7 @@ _start:
   # +--------------------------------------------+
   # | write(1, message, message.len) system call |
   # +--------------------------------------------+
-  # Specify system call no. 1, which is the code for print.
+  # Specify system call no. 1, which is the code for write.
   movq $1, %rax
   # Set the file descriptor parameter to 1, which is standard output.
   movq $1, %rdi
